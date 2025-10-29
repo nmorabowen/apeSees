@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apeSees"
+version = "0.1.0"
+description = "A Pythonic wrapper for OpenSeesPy with helpful utilities for structural analysis"
+authors = [
+    {name = "nmorabowen", email = "your.email@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+keywords = [
+    "opensees",
+    "openseespy",
+    "structural-engineering",
+    "finite-element-analysis",
+    "structural-analysis",
+    "seismic-analysis",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "matplotlib>=3.3.0",
+    "openseespy>=3.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=3.0",
+    "black>=22.0",
+    "isort>=5.0",
+    "mypy>=0.991",
+    "flake8>=4.0",
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=1.0",
+    "sphinx-autodoc-typehints>=1.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/nmorabowen/apeSees"
+Documentation = "https://github.com/nmorabowen/apeSees#readme"
+Repository = "https://github.com/nmorabowen/apeSees"
+"Bug Tracker" = "https://github.com/nmorabowen/apeSees/issues"
+
+[tool.setuptools]
+packages = ["apeSees", "apeSees.timeseries", "apeSees.materials", "apeSees.section"]
+
+[tool.setuptools.package-data]
+apeSees = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "--cov=apeSees --cov-report=html --cov-report=term-missing"
