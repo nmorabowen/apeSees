@@ -201,6 +201,7 @@ class UniaxialMaterialTester:
         
         ax.grid(True, alpha=0.3)
         
+        
         return ax, result
 
     def get_backbone(

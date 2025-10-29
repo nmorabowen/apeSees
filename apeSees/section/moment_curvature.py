@@ -9,6 +9,7 @@ from matplotlib.patches import Rectangle, Circle
 import openseespy.opensees as ops
 
 from .results import MomentCurvatureResults
+from ..timeseries import LinearTimeSeries, ASCE41Protocol
 
 if TYPE_CHECKING:
     from .base import Section
@@ -85,7 +86,6 @@ class MomentCurvature:
         >>> protocol = ASCE41Protocol(tag=1, max_disp=1.0)
         >>> result = mc.solve(axial_load=-1e6, use_protocol=True, protocol=protocol)
         """
-        from ..timeseries import LinearTimeSeries, ASCE41Protocol
         
         ops.wipe()
         ops.model('basic', '-ndm', 3, '-ndf', 6)
@@ -176,7 +176,7 @@ class MomentCurvature:
         converged = True
         for i in range(n_steps):
             curvatures[i] = ops.nodeDisp(load_node, 5)
-            moments[i] = ops.eleForce(element_tag, 6)  # Moment at node (reaction)
+            moments[i] = ops.eleForce(element_tag, 5)  # Moment at node (reaction)
             
             fdat = np.array(ops.eleResponse(element_tag, 'section', 'fiberData2'), dtype=float)
             fiber_history[i, :, :] = fdat.reshape(-1, 6)
