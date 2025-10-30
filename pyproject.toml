@@ -7,10 +7,10 @@ name = "apeSees"
 version = "0.1.0"
 description = "A Pythonic wrapper for OpenSeesPy with helpful utilities for structural analysis"
 authors = [
-    {name = "nmorabowen", email = "your.email@example.com"}
+    { name = "nmorabowen", email = "your.email@example.com" }
 ]
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 requires-python = ">=3.9"
 keywords = [
     "opensees",
@@ -61,12 +61,20 @@ Documentation = "https://github.com/nmorabowen/apeSees#readme"
 Repository = "https://github.com/nmorabowen/apeSees"
 "Bug Tracker" = "https://github.com/nmorabowen/apeSees/issues"
 
+# -----------------------------
+# 🧠 setuptools configuration
+# -----------------------------
 [tool.setuptools]
-packages = ["apeSees", "apeSees.timeseries", "apeSees.materials", "apeSees.section"]
+# automatically discover all subpackages under apeSees/
+[tool.setuptools.packages.find]
+include = ["apeSees*"]
 
 [tool.setuptools.package-data]
 apeSees = ["py.typed"]
 
+# -----------------------------
+# 🧹 Formatting & linting
+# -----------------------------
 [tool.black]
 line-length = 100
 target-version = ['py39', 'py310', 'py311']
@@ -89,3 +97,4 @@ python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
 addopts = "--cov=apeSees --cov-report=html --cov-report=term-missing"
+

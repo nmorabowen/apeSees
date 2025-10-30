@@ -262,7 +262,7 @@ class MomentCurvature:
             _, ax = plt.subplots(figsize=(8, 5))
         
         if label is None:
-            label = f"P = {result.axial_load/1e6:.1f} MN"
+            label = f"P = {result.axial_load:.2e} N, θ = {result.theta}°"
         
         ax.plot(result.curvatures, result.moments, label=label, **plot_kwargs)
         ax.set_xlabel("Curvature [1/mm]")

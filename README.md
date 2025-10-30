@@ -1,9 +1,5 @@
 # apeSees 🦍
 
-[![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![OpenSeesPy](https://img.shields.io/badge/OpenSeesPy-3.4+-green.svg)](https://openseespydoc.readthedocs.io/)
-
 **A Pythonic wrapper for OpenSeesPy with helpful utilities for structural analysis.**
 
 apeSees makes OpenSeesPy more intuitive and user-friendly by providing:
