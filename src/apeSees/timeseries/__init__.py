@@ -17,6 +17,3 @@ __all__ = [
     "ModifiedATC24Protocol",
     "FEMA461Protocol",
 ]
-
-__version__ = "0.1.0"
-__author__ = "nmorabowen"
