@@ -179,3 +179,8 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Claude Code session scratch and worktrees stay untracked; task guides in
+# .claude/skills/ are tracked source (see AGENTS.md).
+.claude/*
+!.claude/skills/
