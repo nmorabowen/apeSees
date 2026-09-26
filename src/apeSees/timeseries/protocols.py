@@ -257,10 +257,11 @@ class FEMA461Protocol(TimeSeries):
         self.alpha: float = float(alpha)
 
         # Amplitudes as fractions of max_disp: from 1%, times (1 + alpha)
-        # per step, then land exactly on the peak.
+        # per step, then land exactly on the peak. The tolerance keeps a step
+        # that rounds to just below 1.0 from repeating the peak amplitude.
         levels = []
         a = 0.01
-        while a < 1.0:
+        while a < 1.0 - 1e-9:
             levels.append(a)
             a *= (1.0 + self.alpha)
         levels.append(1.0)

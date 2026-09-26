@@ -59,3 +59,15 @@ def test_time_is_normalized_constant_slope() -> None:
     assert ts.time[0] == 0.0 and ts.time[-1] == pytest.approx(1.0)
     rate = np.abs(np.diff(ts.disp)) / np.diff(ts.time)
     np.testing.assert_allclose(rate, rate[0])
+
+
+def test_no_near_duplicate_last_step() -> None:
+    # (1 + alpha)**12 = 100 lands the 13th step on 0.9999999999999996 in
+    # floating point. It must not become a separate amplitude next to 1.0.
+    alpha = 100 ** (1 / 12) - 1
+    ts = FEMA461Protocol(tag=1, max_disp=1.0, alpha=alpha)
+    ladder = _ladder(ts.disp)
+
+    assert len(ladder) == 13
+    assert {n for _, n in ladder} == {2}
+    assert ladder[-1][0] == 1.0

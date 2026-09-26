@@ -54,7 +54,9 @@ class UniaxialMaterialTester:
         time_series : TimeSeries
             TimeSeries object defining the loading history.
         number_of_points : int, optional
-            Number of analysis steps. Default is 100.
+            Number of uniform analysis steps. Default is 100. The vertices
+            of a tabulated path (``time_series.time``, e.g. the reversal
+            peaks of a cyclic protocol) are added as extra steps.
             
         Returns
         -------
@@ -91,21 +93,30 @@ class UniaxialMaterialTester:
         ops.pattern("Plain", load_pattern_tag, time_series_tag, '-fact', 1.0)
         ops.sp(node_2, 1, 1.0)
 
-        # Set up analysis
-        displacement_increment = 1.0 / number_of_points
+        # Pseudo-time steps: a uniform grid of number_of_points steps plus
+        # every vertex of a tabulated path (the protocols' reversal peaks),
+        # so each peak is analysed exactly instead of being stepped over.
+        steps = np.linspace(0.0, 1.0, number_of_points + 1)
+        vertices = getattr(time_series, 'time', None)
+        if vertices is not None:
+            vertices = np.asarray(vertices, dtype=float)
+            steps = np.union1d(steps, vertices[(vertices > 0.0) & (vertices < 1.0)])
+            steps = steps[np.concatenate(([True], np.diff(steps) > 1e-12))]
+            steps[-1] = 1.0
+        n_steps = len(steps) - 1
         
         ops.system('UmfPack')
         ops.constraints('Transformation')
-        ops.integrator('LoadControl', displacement_increment)
+        ops.integrator('LoadControl', steps[1] - steps[0])
         ops.test('NormDispIncr', 1.0e-6, 10)
         ops.algorithm('Newton')
         ops.numberer('RCM')
         ops.analysis('Static')
 
         # Initialize result arrays
-        stress_array = np.zeros(number_of_points + 1)
-        strain_array = np.zeros(number_of_points + 1)
-        time_array = np.linspace(0, 1, number_of_points + 1)
+        stress_array = np.zeros(n_steps + 1)
+        strain_array = np.zeros(n_steps + 1)
+        time_array = steps
 
         # Record initial state
         ops.record()
@@ -114,7 +125,8 @@ class UniaxialMaterialTester:
         
         # Run analysis
         converged = True
-        for i in range(number_of_points):
+        for i in range(n_steps):
+            ops.integrator('LoadControl', steps[i + 1] - steps[i])
             if ops.analyze(1) != 0:
                 converged = False
                 # Truncate arrays to successful steps
@@ -159,7 +171,7 @@ class UniaxialMaterialTester:
         time_series : TimeSeries
             TimeSeries object defining loading history.
         number_of_points : int, optional
-            Number of analysis steps. Default is 500.
+            Number of uniform analysis steps (see ``run``). Default is 500.
         ax : plt.Axes, optional
             Matplotlib axes. If None, creates new figure.
         figsize : tuple, optional
