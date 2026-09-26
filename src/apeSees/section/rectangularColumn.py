@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
-from attr import dataclass
+from dataclasses import dataclass
 import numpy as np
 import openseespy.opensees as ops # Keep ops for 'nAs' call? No, that's from .functions
 
@@ -19,7 +19,8 @@ if TYPE_CHECKING:
     from .fiber_mapper import FiberMapper
     from .rectangularColumn import RectangularColumnSection 
 
-@dataclass
+# order=True keeps the <, <=, >, >= methods that attr.dataclass generated.
+@dataclass(order=True)
 class SectionProperties:
     """Section geometric and reinforcement properties."""
     

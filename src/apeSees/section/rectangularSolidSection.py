@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
-from attr import dataclass
+from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -17,7 +17,8 @@ if TYPE_CHECKING:
     from .fiber_mapper import FiberMapper
 
 
-@dataclass
+# order=True keeps the <, <=, >, >= methods that attr.dataclass generated.
+@dataclass(order=True)
 class SectionProperties:
     """Section geometric properties for a solid section."""
     
