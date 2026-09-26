@@ -221,14 +221,32 @@ class FEMA461Protocol(TimeSeries):
     """
     FEMA-461 cyclic protocol with constant slope and unit time.
     
+    Amplitudes start at 1% of ``max_disp`` and grow by ``(1 + alpha)`` per
+    step, with two cycles at each amplitude (FEMA 461 §2.2). The last step
+    lands exactly on ``max_disp``, so it can be shorter than the others.
+    The default ``alpha = 0.4`` gives the standard's ~1.4x increment.
+    
+    Note:
+        Earlier versions ran one cycle per amplitude with a default
+        ``alpha = 0.62`` and stopped before reaching ``max_disp`` (with
+        the defaults the peak was 0.768 x ``max_disp``). Histories and
+        saved results from those versions do not match this one. The
+        amplitude ladder is the same as apeGmsh's ``FEMA461Protocol``.
+    
     Examples:
-        >>> ts = FEMA461Protocol(tag=31, max_disp=0.03, alpha=0.62)
+        >>> ts = FEMA461Protocol(tag=31, max_disp=0.03)
         >>> ts.build()
         31
         >>> ts.plot()
+    
+    Args:
+        tag: Unique identifier for the OpenSees time series.
+        max_disp: Maximum displacement or strain value (the last amplitude).
+        alpha: Amplitude increment per step; each amplitude is
+            ``(1 + alpha)`` times the previous one.
     """
 
-    def __init__(self, tag: int, max_disp: float = 1.00, alpha: float = 0.62):
+    def __init__(self, tag: int, max_disp: float = 1.00, alpha: float = 0.4):
         if max_disp <= 0:
             raise ValueError(f"max_disp must be positive, got {max_disp}")
         if alpha <= 0:
@@ -238,11 +256,20 @@ class FEMA461Protocol(TimeSeries):
         self.max_disp: float = float(max_disp)
         self.alpha: float = float(alpha)
 
+        # Amplitudes as fractions of max_disp: from 1%, times (1 + alpha)
+        # per step, then land exactly on the peak.
+        levels = []
+        a = 0.01
+        while a < 1.0:
+            levels.append(a)
+            a *= (1.0 + self.alpha)
+        levels.append(1.0)
+
         vals = [0.0]
-        d = 0.01 * self.max_disp  # start at 1% of max
-        while abs(d) < self.max_disp:
-            vals += [d, -d]
-            d *= (1.0 + self.alpha)
+        for a in levels:
+            A = a * self.max_disp
+            for _ in range(2):  # two cycles per amplitude (FEMA 461 §2.2)
+                vals += [+A, -A]
         vals += [0.0]
         self.disp: np.ndarray = np.asarray(vals, dtype=float)
 
