@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -26,11 +26,10 @@ dependencies = [
 
 [project.urls]
 "Homepage" = "https://github.com/nmorabowen/apeSees"
-"Bug Tracker" = "https://github.com/nmorabowen/STKO_to_python/apeSees"
+"Bug Tracker" = "https://github.com/nmorabowen/apeSees/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = {find = {where = ["src"]}} 
-
-[tool.setuptools.package-data]
-"*" = ["*.ipynb"]
+# Only the apeSees package. src/examples (notebooks and data) is not
+# installed; find would otherwise pick it up as a namespace package.
+packages = {find = {where = ["src"], include = ["apeSees", "apeSees.*"]}}
